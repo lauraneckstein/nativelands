@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<head>
+<meta charset="UTF-8">
+<title> American Indian and Alaskan Native Casinos by Laura Newman Eckstein. Dedicated to Laurie Allen, Librarian, Haverford College, November 16, 2014
+</title>
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+<link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.3/leaflet.fullscreen.css" />
+<link rel="stylesheet" href="css/gh-fork-ribbon.css" />
+<link rel="stylesheet" href="css/leaflet-search.css" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Source+Sans+Pro|Oswald:400,300,700" />
+<link rel="stylesheet" href="css/leaflet.magnifyingglass.css" />
+
+
+
+
+
+<style>
+     body {
+            padding: 0;
+            margin: 0;
+        }
+        html, body, #map {
+            height: 100%;
+            width: 100%;
+        }
+        .info {
+    padding: 9px 8px;
+    font-size: 14px;
+    font-family: 'Oswald', sans-serif;
+    font-style: 300;
+    background: white;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+   
+}
+.info h4 {
+    margin-right: auto;
+    color: black;
+    font-family: 'Oswald', sans-serif;
+    font-style: bold;
+    font-size: 18px;
+}
+.legend {
+    line-height: 18px;
+    color: #555;
+    
+}
+.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: auto;
+    opacity: 100;
+    
+  
+}
+</style>
+</head>
+
+<body>
+	<div id="map" class="map"></div>
+
+	<script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet-src.js"></script>
+	//Data from 2013 US Census TIGER Shapefiles of American Indian and Alaskan Native lands
+	<script src="js/ainh.js"></script>
+	<script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.3/Leaflet.fullscreen.min.js"></script>
+	<script src="js/leaflet-search.src.js"></script>
+	<script src="js/leaflet.magnifyingglass.js"></script>
+
+	<script>
+		var map = L.map('map', {
+			center: [39, -98],
+			zoom: 3,
+			zoomControl: true,
+			fullscreenControl: true
+
+	});
+var lines = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.jpg', { attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
+}).addTo(map);
+
+		var info = L.control();
+
+		info.onAdd = function (map) {
+			this._div = L.DomUtil.create('div','info');
+			this.update();
+			return this._div;
+		};
+
+		info.update = function (props) {
+			this._div.innerHTML = '<h4>American Indian, Alaskan Native, and Native Hawaiian (AIANNH) Homelands</h4>' + (props ?
+				'<b>' + props.NAMELSAD 				: '');
+		};
+
+		info.addTo(map);
+
+
+		function getColor(AIANNHCE) {
+		return AIANNHCE > 9500 ? '#cab2d6' :
+			       AIANNHCE > 9000  ? '#ff7f00' :
+			       AIANNHCE > 8000  ? '#fdbf6f' :
+			       AIANNHCE > 6000  ? '#e31a1c' :
+			       AIANNHCE > 5900  ? '#fb9a99' :
+			       AIANNHCE > 5500  ? '#33a02c' :
+			       AIANNHCE > 5000  ? '#b2df8a' :
+			       AIANNHCE > 4800  ? '#1f78b4' :
+			                  '#a6cee3';
+		}
+
+
+		function style(feature) {
+			return {
+				weight: 1,
+				opacity: 1,
+				color: 'black',
+				dashArray: '3',
+				fillOpacity: 0.7,
+				fillColor: getColor(feature.properties.AIANNHCE)
+			};
+		}
+
+		function highlightFeature(e) {
+			var layer = e.target;
+
+			layer.setStyle({
+				weight: 5,
+				color: '#666',
+				dashArray: '',
+				fillOpacity: 0.7
+			});
+
+			if (!L.Browser.ie && !L.Browser.opera) {
+				layer.bringToFront();
+			}
+
+			info.update(layer.feature.properties);
+		}
+
+		var geojson;
+
+		function resetHighlight(e) {
+			geojson.resetStyle(e.target);
+			info.update();
+		}
+
+		function zoomToFeature(e) {
+			map.fitBounds(e.target.getBounds());
+			
+		}
+
+		function onEachFeature(feature, layer) {
+			layer.on({
+				mouseover: highlightFeature,
+				mouseout: resetHighlight,
+				click: zoomToFeature
+			});
+		}
+
+		geojson = L.geoJson(indian, {
+			style: style,
+			onEachFeature: onEachFeature
+		}).addTo(map);
+
+		map.attributionControl.addAttribution('AIANNH Data &copy; <a href="http://census.gov/">US Census Bureau</a>');
+
+
+		var legend = L.control({position: 'bottomright'});
+
+		legend.onAdd = function (map) {
+
+			var div = L.DomUtil.create('div', 'info legend'),
+				grades = [0, 4800, 5000, 5500, 5900, 6000, 8000, 9000, 9500],
+				key_labels = ["Federally Recognized Legal American Indian area",
+				"American Indian Joint-Use Area", 
+				"Hawaiian Home Land", 
+				"Oklahoma Tribal Statistical Area", 
+				"Joint-Use Oklahoma Tribal Statistical Area", 
+				"Alaska Native Village Statistical Area", 
+				"Tribal Designated Statistical Area", 
+				"State Recognized Legal American Indian Area", 
+				"State Designated Tribal Statistical Area"],
+				labels = ["Types of AIANNH Land" + "</br>"],
+				spaces = ["&nbsp;"],
+				from, to;
+
+			for (var i = 0; i < grades.length; i++) {
+				from = grades[i];
+				to = grades[i + 1];
+
+				labels.push(
+					'<i style="background:' + getColor(from + 1) + '"></i> ' + spaces + key_labels[i] + "</br>");
+			}
+
+			div.innerHTML = labels.join('<br>');
+			return div;
+		};
+
+		legend.addTo(map);
+		
+	var magnifyingGlass = L.magnifyingGlass({
+    layer: [ 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.jpg' ]
+});
+
+map.addLayer(magnifyingGlass);
+
+
+</script>
+</body>
+
+</html>
