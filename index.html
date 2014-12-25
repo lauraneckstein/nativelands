@@ -62,7 +62,6 @@
 	<div id="map" class="map"></div>
 
 	<script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet-src.js"></script>
-	//Data from 2013 US Census TIGER Shapefiles of American Indian and Alaskan Native lands
 	<script src="js/ainh.js"></script>
 	<script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.3/Leaflet.fullscreen.min.js"></script>
 	<script src="js/leaflet-search.src.js"></script>
@@ -197,11 +196,21 @@ var lines = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.jpg', { at
 
 		legend.addTo(map);
 		
-	var magnifyingGlass = L.magnifyingGlass({
-    layer: [ 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.jpg' ]
+		var searchControl = new L.Control.Search({layer: geojson, propertyName: 'NAMELSAD', circleLocation:true, zoom: 6});
+
+searchControl.on('search_locationfound', function(e) {
+
+    e.layer.setStyle({fillColor: '#3f0'});
+
+	}).on('search_collapsed', function(e) {
+
+    featuresLayer.eachLayer(function(layer) {
+        featuresLayer.resetStyle(layer);
+    }); 
 });
 
-map.addLayer(magnifyingGlass);
+	map.addControl(searchControl);
+
 
 
 </script>
