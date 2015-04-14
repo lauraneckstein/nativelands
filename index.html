@@ -12,13 +12,14 @@
     <meta name="description" content="About Laura Newman Eckstein" />
 		<meta name="keywords" content="Laura Newman Eckstein, Laura Eckstein, Laura N Eckstein" />
 		<meta name="author" content="Laura Newman Eckstein" />
+<link rel="shortcut icon" href="images/favicon.ico">
 
 
 <link rel="stylesheet" href="css/leaflet.css" />
 <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.3/leaflet.fullscreen.css" />
 <link rel="stylesheet" href="css/gh-fork-ribbon.css" />
 <link rel="stylesheet" href="css/leaflet-search.css" />
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:300" />
 
 
 
@@ -97,8 +98,8 @@ var lines = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.jpg', { at
 		};
 
 		info.update = function (props) {
-			this._div.innerHTML = '<h4>American Indian, Alaskan Native, and Native Hawaiian (AIANNH) Homelands</h4>' + (props ?
-				'<b>' + props.NAMELSAD 				: '');
+			this._div.innerHTML = '<h4>American Indian, Alaskan Native, and Native Hawaiian (AIANNH) Homelands <br> Produced by Laura Newman Eckstein <br></h4>' + (props ?
+				'<b><br>' + props.NAMELSAD 				: '');
 		};
 
 		info.addTo(map);
