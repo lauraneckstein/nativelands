@@ -98,7 +98,7 @@ var lines = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.jpg', { at
 		};
 
 		info.update = function (props) {
-			this._div.innerHTML = '<h4>American Indian, Alaskan Native, and Native Hawaiian (AIANNH) Homelands <br> Produced by Laura Newman Eckstein <br></h4>' + (props ?
+			this._div.innerHTML = '<h4>American Indian, Alaskan Native, and Native Hawaiian (AIANNH) Homelands <br> Produced by <a href="http://lauraneckstein.com">Laura Newman Eckstein</a> <br></h4>' + (props ?
 				'<b><br>' + props.NAMELSAD 				: '');
 		};
 
