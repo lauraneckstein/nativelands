@@ -80,23 +80,17 @@
 	<script src="js/share.min.js"></script>
 
 	<script>
-		var map = L.map('map', {
-			center: [39, -98],
-			zoom: 3,
-			zoomControl: true,
-			fullscreenControl: true
+var layer = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>'
+});
 
-	});
-var lines = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.jpg', { attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
-}).addTo(map);
+var map = L.map('map', {
+scrollWheelZoom: false,
+center: [40.7127837, -74.0059413],
+zoom: 6
+});
 
-		var info = L.control();
-
-		info.onAdd = function (map) {
-			this._div = L.DomUtil.create('div','info');
-			this.update();
-			return this._div;
-		};
+map.addLayer(layer);
 
 		info.update = function (props) {
 			this._div.innerHTML = '<h4>American Indian, Alaskan Native, and Native Hawaiian (AIANNH) Homelands <br> Produced by <a href="http://lauraneckstein.com">Laura Newman Eckstein</a> <br></h4>' + (props ?
