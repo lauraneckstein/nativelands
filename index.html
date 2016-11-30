@@ -80,17 +80,17 @@
 	<script src="js/share.min.js"></script>
 
 	<script>
-var layer = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+var lines = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>'
 });
 
 var map = L.map('map', {
-scrollWheelZoom: false,
+scrollWheelZoom: true,
 center: [40.7127837, -74.0059413],
-zoom: 6
+zoom: 3
 });
 
-map.addLayer(layer);
+map.addLayer(lines);
 
 		info.update = function (props) {
 			this._div.innerHTML = '<h4>American Indian, Alaskan Native, and Native Hawaiian (AIANNH) Homelands <br> Produced by <a href="http://lauraneckstein.com">Laura Newman Eckstein</a> <br></h4>' + (props ?
