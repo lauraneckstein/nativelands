@@ -21,11 +21,6 @@
 <link rel="stylesheet" href="css/leaflet-search.css" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:300" />
 
-	  <script src="js/leaflet-src.js"></script>
-	<script src="js/ainh.js"></script>
-	<script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.3/Leaflet.fullscreen.min.js"></script>
-	<script src="js/leaflet-search.src.js"></script>
-	<script src="js/share.min.js"></script>
 
 
 
@@ -78,29 +73,31 @@
 	<div id="map" class="map"></div>
 	
 <a href="https://github.com/lauraneckstein/nativelands"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1000;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
-	
-
+	<script src="js/leaflet-src.js"></script>
+	<script src="js/ainh.js"></script>
+	<script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.3/Leaflet.fullscreen.min.js"></script>
+	<script src="js/leaflet-search.src.js"></script>
+	<script src="js/share.min.js"></script>
 	<script>
-var lines = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>'
-});
-
-var map = L.map('map', {
-scrollWheelZoom: true,
-center: [40.7127837, -74.0059413],
-zoom: 3
-});
-
-map.addLayer(lines);
-
+		var map = L.map('map', {
+			center: [39, -98],
+			zoom: 3,
+			zoomControl: true,
+			fullscreenControl: true
+	});
+var lines = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.jpg', { attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
+}).addTo(map);
+		var info = L.control();
+		info.onAdd = function (map) {
+			this._div = L.DomUtil.create('div','info');
+			this.update();
+			return this._div;
+		};
 		info.update = function (props) {
 			this._div.innerHTML = '<h4>American Indian, Alaskan Native, and Native Hawaiian (AIANNH) Homelands <br> Produced by <a href="http://lauraneckstein.com">Laura Newman Eckstein</a> <br></h4>' + (props ?
 				'<b><br>' + props.NAMELSAD 				: '');
 		};
-
 		info.addTo(map);
-
-
 		function getColor(AIANNHCE) {
 		return AIANNHCE > 9500 ? '#cab2d6' :
 			       AIANNHCE > 9000  ? '#ff7f00' :
@@ -112,8 +109,6 @@ map.addLayer(lines);
 			       AIANNHCE > 4800  ? '#1f78b4' :
 			                  '#a6cee3';
 		}
-
-
 		function style(feature) {
 			return {
 				weight: 1,
@@ -124,36 +119,28 @@ map.addLayer(lines);
 				fillColor: getColor(feature.properties.AIANNHCE)
 			};
 		}
-
 		function highlightFeature(e) {
 			var layer = e.target;
-
 			layer.setStyle({
 				weight: 5,
 				color: '#666',
 				dashArray: '',
 				fillOpacity: 0.7
 			});
-
 			if (!L.Browser.ie && !L.Browser.opera) {
 				layer.bringToFront();
 			}
-
 			info.update(layer.feature.properties);
 		}
-
 		var geojson;
-
 		function resetHighlight(e) {
 			geojson.resetStyle(e.target);
 			info.update();
 		}
-
 		function zoomToFeature(e) {
 			map.fitBounds(e.target.getBounds());
 			
 		}
-
 		function onEachFeature(feature, layer) {
 			layer.on({
 				mouseover: highlightFeature,
@@ -161,19 +148,13 @@ map.addLayer(lines);
 				click: zoomToFeature
 			});
 		}
-
 		geojson = L.geoJson(indian, {
 			style: style,
 			onEachFeature: onEachFeature
 		}).addTo(map);
-
 		map.attributionControl.addAttribution('AIANNH Data &copy; <a href="http://census.gov/">US Census Bureau</a>');
-
-
 		var legend = L.control({position: 'bottomright'});
-
 		legend.onAdd = function (map) {
-
 			var div = L.DomUtil.create('div', 'info legend'),
 				grades = [0, 4800, 5000, 5500, 5900, 6000, 8000, 9000, 9500],
 				key_labels = ["Federally Recognized Legal American Indian area",
